@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Battery Status Events Playground</title>
+<link href="battery-status.css" rel="stylesheet"/>
+<script src="battery-status.js"></script>
+<script>
+
+// instantiate a new BatteryStatusEventSource object
+
+var battery = new BatteryStatusEventSource();
+
+// then use addEventListener() ...
+
+battery.addEventListener('batterystatus', function (e) {
+  log('status', e);
+  blink('status', 'gray');
+});
+
+// ... or onbattery* event handlers
+
+battery.onbatterylow = function (e) {
+  log('low', e);
+  blink('low', 'salmon');
+};
+
+battery.onbatterycritical = function (e) {
+  log('critical', e);
+  blink('critical', 'red');
+};
+
+battery.onbatteryok = function (e) {
+  log('ok', e);
+  blink('ok', 'green');
+};
+
+// for logging debug output to console.log
+
+function log(type, e) {
+  console.log('onbattery' + type + '(' + JSON.stringify(e) + ');');
+}
+
+// <blink> is back!
+
+function blink(id, color) {
+  $(id).style.backgroundColor = color;
+  setTimeout(function() {
+    $(id).style.backgroundColor = '';
+  }, 300);
+}
+
+</script>
+</head>
+<body>
+  <h1>Battery Status Events Playground</h1>
+  <p id="warning"></p>
+  <p>This demo implements the
+    <a href="http://www.w3.org/TR/2011/WD-battery-status-20110915/">
+    Battery Status Events</a> specification and
+    simulates battery-powered user agent behavior. You can adjust the battery
+    level and whether the device is plugged in from the controls below.
+    A blink of an event name indicates the event has been fired.
+  </p>
+  <div class="controls">
+    <div class="blink">event:
+      <span id="status">batterystatus</span>
+      <span id="low">batterylow</span>
+      <span id="critical">batterycritical</span>
+      <span id="ok">batteryok</span>
+    </div>
+    <br>
+    <div>level: <span id="levelmeter"></span>
+      <br>
+      <input id="level" type="range" min="0" max="100" step="1" value="30">
+    </div>
+    <div>isPlugged:
+      <input id="isplugged" type="checkbox">
+    </div>
+  </div>
+  <p>
+    See console.log() for debug information.
+  </p>
+  <div id="footer">by <a href="http://twitter.com/anssik">Anssi Kostiainen</a></div>
+</body>
+</html>
